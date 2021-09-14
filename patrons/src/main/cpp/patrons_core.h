@@ -182,7 +182,9 @@ void DefineOffset() {
             offset_region_limit_in_region_space = 0x7c - 4;
 
             if (strcasecmp(brand, "samsung") == 0) {
-                if (memcmp(device, "SM-C", 4) == 0) {
+                if (memcmp(device, "SM-C", 4) == 0
+                    || memcmp(device, "SM-G61", 6) == 0
+                    || memcmp(device, "SM-A60", 6) == 0) {
                     offset_region_space_in_heap = 0x1d4;
                     offset_region_limit_in_region_space = 0x74 - 4;
                 } else if (memcmp(device, "SM-G93", 6) == 0) {
