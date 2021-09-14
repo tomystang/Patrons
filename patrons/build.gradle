@@ -50,4 +50,10 @@ android {
     }
 }
 
-apply from: rootProject.file('gradle/publish.gradle')
+apply from: rootProject.file('gradle/WeChatPublish.gradle')
+
+wechatPublish {
+    artifactId = POM_ARTIFACT_ID
+    group = GROUP
+    version = VERSION_NAME
+}
