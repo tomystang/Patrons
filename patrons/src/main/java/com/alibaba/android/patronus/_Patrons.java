@@ -206,6 +206,11 @@ public class _Patrons {
     static native long getCurrentRegionSpaceSize();
 
     /**
+     * 获取当前能分配的最大虚拟地址 (B)
+     */
+    static native long getCurrentMaxAvailableVmAddr();
+
+    /**
      * Dump native 层的日志
      */
     static native String dumpLogs();
@@ -234,7 +239,7 @@ public class _Patrons {
             }
 
             long beforeVmSize = readVssSize();
-            float currentPeriod = beforeVmSize / VSS_MAX_IN_V7A;
+            float currentPeriod = (float) (beforeVmSize / (double) getCurrentMaxAvailableVmAddr());
 
             if ((currentRegionSpaces - config.shrinkStep) < config.lowerLimit) {
                 Log.e(TAG, "vss has no space to resize, stop watching. current space = " + currentRegionSpaces);

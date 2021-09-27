@@ -14,6 +14,7 @@
 #include <inttypes.h>
 #include <pthread.h>
 #include <sys/syscall.h>
+#include <sys/mman.h>
 
 #include "xhook/xhook.h"
 
@@ -332,6 +333,18 @@ Java_com_alibaba_android_patronus__1Patrons_getCurrentRegionSpaceSize(__unused J
     }
 
     return NonGrowthLimitCapacity();
+}
+
+JNIEXPORT jlong JNICALL
+Java_com_alibaba_android_patronus__1Patrons_getCurrentMaxAvailableVmAddr(__unused JNIEnv *env,
+                                                                         __unused jclass clazz) {
+    void* addr = mmap((void*) 0xFFFFFFFF, PAGE_SIZE, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
+    if (addr == MAP_FAILED) {
+        // 分配失败，返回默认值 4G
+        return 4LL * 1024 * 1024 * 1024;
+    }
+    munmap(addr, PAGE_SIZE);
+    return (jlong) addr;
 }
 
 JNIEXPORT jstring JNICALL
