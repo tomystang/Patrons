@@ -18,7 +18,7 @@ android {
         externalNativeBuild {
             cmake {
                 abiFilters rootProject.ext.abiFilters.split(",")
-                arguments "-DANDROID_STL=none"
+                arguments "-DANDROID_STL=none", "-DGRADLE_PATRONS_VERSION=\"${rootProject.ext.versionName}\""
                 cppFlags "-nostdinc++ -fno-exceptions"
             }
         }
