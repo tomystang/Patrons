@@ -1,0 +1,7 @@
+patrons {
+    global:
+        JNI_OnLoad;
+        Java_*;
+    local:
+        *;
+};
