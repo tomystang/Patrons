@@ -88,6 +88,8 @@ bool debuggable;
 
 // 当前 API Level
 int api_level;
+// 是否为 Preview 版本
+int api_preview_flag;
 
 // 当前机型
 char brand[128];
@@ -231,6 +233,10 @@ void DefineOffset() {
             offset_region_space_in_heap = 0x208;
             offset_region_limit_in_region_space = 0x160;
 
+            if (api_preview_flag) {
+                offset_region_limit_in_region_space = 0x16C;
+            }
+
             if (strcasecmp(brand, "meizu") == 0) {
                 offset_heap_in_runtime = 0xF4;
             }
@@ -241,6 +247,18 @@ void DefineOffset() {
 
             // Android 11 多了一个 map
             offset_num_regions_in_region_space = offset_region_limit_in_region_space - 4 * 5 - 12;
+
+            if (api_preview_flag) {
+                // Android 12 Preview 多了一个 uint64_t 和一个 uint32_t 长度的 padding.
+                offset_num_regions_in_region_space -= 8 + 4;
+            }
+
+            break;
+        case __ANDROID_API_S__:
+            offset_heap_in_runtime = 0xEC;
+            offset_region_space_in_heap = 0x208;
+            offset_region_limit_in_region_space = 0x16C;
+            offset_num_regions_in_region_space = offset_region_limit_in_region_space - 4 * 6 - 8 - 12;
 
             break;
     }
@@ -272,6 +290,13 @@ const char *GetArtPath() {
     return lib_art_path_;
 }
 
+static int android_get_device_api_preview_flag() {
+    char value[92] = { 0 };
+    if (__system_property_get("ro.build.version.preview_sdk", value) < 1) return 0;
+    int preview_flag = atoi(value);
+    return (preview_flag >= 0) ? preview_flag : 0;
+}
+
 /**
  * 初始化环境信息，android 版本和机型等等，用于后期适配
  */
@@ -286,6 +311,8 @@ void InitEnv() {
     __system_property_get("ro.build.fingerprint", fingerprint);
 
     api_level = android_get_device_api_level();
+
+    api_preview_flag = android_get_device_api_preview_flag();
 }
 
 /**
