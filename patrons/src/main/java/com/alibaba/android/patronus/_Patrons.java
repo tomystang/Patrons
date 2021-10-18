@@ -48,7 +48,7 @@ public class _Patrons {
 
     private static Timer autoCheckVssTimer = null;
 
-    private static boolean NATIVE_LIB_LOADED = false;
+    private static final boolean[] NATIVE_LIB_LOADED = {false};
 
     // 当前 Region Space 大小，单位 MB
     private static long currentRegionSpaces;
@@ -220,11 +220,16 @@ public class _Patrons {
         _Patrons.config.auto = false;
     }
 
+    static boolean isNativeLibLoaded() {
+        synchronized (NATIVE_LIB_LOADED) {
+            return NATIVE_LIB_LOADED[0];
+        }
+    }
+
     static String dumpNativeLogs() {
-        if (NATIVE_LIB_LOADED) {
+        if (isNativeLibLoaded()) {
             return dumpLogs();
         }
-
         return "can not dump logs without native libs";
     }
 
@@ -322,8 +327,10 @@ public class _Patrons {
 
     static {
         if (isSupport()) {
-            System.loadLibrary("patrons");
-            NATIVE_LIB_LOADED = true;
+            synchronized (NATIVE_LIB_LOADED) {
+                System.loadLibrary("patrons");
+                NATIVE_LIB_LOADED[0] = true;
+            }
         }
     }
 }
