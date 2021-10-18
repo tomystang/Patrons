@@ -45,6 +45,10 @@ public final class Patrons {
         }
     }
 
+    public static long getCurrentMaxAvailableVMAddr() {
+        return _Patrons.getCurrentMaxAvailableVmAddr();
+    }
+
     public static long readVssSize() {
         return _Patrons.readVssSize();
     }
