@@ -2,6 +2,8 @@ package com.alibaba.android.patronus;
 
 import android.content.Context;
 
+import com.alibaba.android.patronus.util.Log;
+
 /**
  * Patrons Facade
  *
@@ -23,7 +25,20 @@ public final class Patrons {
      * @return code, 错误码，无异常则返回 0
      */
     public static int init(Context context, PatronsConfig config) {
+        return init(context, config, Log.DEFAULT_LOGGER);
+    }
+
+    /**
+     * Patrons 入口
+     *
+     * @param context android context 用来获取文件目录用的
+     * @param config  自定义配置 (如无指导直接传null)
+     * @param logger  日志代理类 (传null表示屏蔽日志，传 Log.DEFAULT_LOGGER 表示输出到 Logcat)
+     * @return code, 错误码，无异常则返回 0
+     */
+    public static int init(Context context, PatronsConfig config, Log.ILogger logger) {
         if (!hasInit) {
+            Log.setLogger(logger);
             int resultCode = _Patrons.init(context, config);
             hasInit = resultCode == 0;
 
