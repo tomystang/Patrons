@@ -9,6 +9,7 @@
 #include <dlfcn.h>
 #include <regex.h>
 #include "string.h"
+#include "xlog_stub/xlog.h"
 #include <jni.h>
 #include <android/log.h>
 #include <android/dlext.h>
@@ -43,9 +44,9 @@ void __log_dump(const char *fmt, ...) {
 
 // 日志定义
 #define LOG_TAG "Patrons-Native"
-#define LOGD(...) { __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__); __log_dump(__VA_ARGS__); }
-#define LOGI(...) { __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__); __log_dump(__VA_ARGS__); }
-#define LOGE(...) { __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__); __log_dump(__VA_ARGS__); }
+#define LOGD(...) { XLOGD(LOG_TAG, __VA_ARGS__); __log_dump(__VA_ARGS__); }
+#define LOGI(...) { XLOGI(LOG_TAG, __VA_ARGS__); __log_dump(__VA_ARGS__); }
+#define LOGE(...) { XLOGE(LOG_TAG, __VA_ARGS__); __log_dump(__VA_ARGS__); }
 
 // dl 族符号宏
 #define DLOPEN(name) (__loader_dlopen ? __loader_dlopen(name, RTLD_LAZY, ((void *) stub_method_in_art) ? ((void *) stub_method_in_art) : (void *) zlibVersion) : (void*) NULL)

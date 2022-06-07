@@ -12,6 +12,7 @@ add_library(
   xhook/xh_util.c
   xhook/xh_version.c
   xhook/xhook.c
+  xlog_stub/xlog.c
 )
 
 target_compile_options(
